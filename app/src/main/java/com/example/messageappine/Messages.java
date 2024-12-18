@@ -31,9 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Activity for displaying and managing messages.
- */
+
 public class Messages extends AppCompatActivity implements OnConversationClickListener {
 
     Button contactButton;
@@ -132,6 +130,9 @@ public class Messages extends AppCompatActivity implements OnConversationClickLi
      * Loads messages from the server and displays them in the RecyclerView.
      */
     private void loadMessages() {
+        conversations.clear();
+        adapter.notifyDataSetChanged();
+
         Call<List<Contact>> call = apiAccess.getContacts(studentID);
         call.enqueue(new Callback<List<Contact>>() {
             @Override
@@ -154,11 +155,6 @@ public class Messages extends AppCompatActivity implements OnConversationClickLi
         });
     }
 
-    /**
-     * Fetches messages for a specific contact.
-     *
-     * @param contact The contact to fetch messages for.
-     */
     private void fetchMessages(Contact contact) {
         Call<List<Message>> call = apiAccess.getMessages(studentID, contact.getStudentID().trim());
         call.enqueue(new Callback<List<Message>>() {
@@ -234,11 +230,7 @@ public class Messages extends AppCompatActivity implements OnConversationClickLi
         adapter.notifyDataSetChanged();
     }
 
-    /**
-     * Handles the click event when a conversation is selected.
-     *
-     * @param conversation The selected conversation.
-     */
+
     @Override
     public void onConversationClick(Conversation conversation) {
         Intent intent = new Intent(this, ActivityChat.class);
