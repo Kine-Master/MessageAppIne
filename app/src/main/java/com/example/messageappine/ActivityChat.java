@@ -33,7 +33,7 @@ public class ActivityChat extends AppCompatActivity {
     private TextView txtContactName;
     private EditText txtMessage;
     private Button btnSendMessage;
-    private Button btnBackToContacts;
+    private Button btnRefreshMessages;
     private Arrays Collections;
 
     List<Message> messages;
@@ -62,12 +62,9 @@ public class ActivityChat extends AppCompatActivity {
         txtMessage = findViewById(R.id.txtMessage);
         btnSendMessage = findViewById(R.id.btnSendMessage);
 
-        btnBackToContacts = findViewById(R.id.btnBackToContacts);
-        btnBackToContacts.setOnClickListener(view -> {
-            Intent intent = new Intent(ActivityChat.this, ContactActivity.class);
-            startActivity(intent);
-            // Finish the current activity to prevent back navigation
-            finish();
+        btnRefreshMessages = findViewById(R.id.btnRefreshMessages);
+        btnRefreshMessages.setOnClickListener(view -> {
+            loadMessagesFromServer();
         });
 
         messages = new ArrayList<>();
@@ -107,6 +104,8 @@ public class ActivityChat extends AppCompatActivity {
      * Loads messages from the server and displays them in the RecyclerView.
      */
     private void loadMessagesFromServer() {
+        messages.clear();
+        adapter.notifyDataSetChanged();
         Call<List<Message>> call = apiAccess.getMessages(sender, receiver);
         call.enqueue(new Callback<List<Message>>() {
             @Override
